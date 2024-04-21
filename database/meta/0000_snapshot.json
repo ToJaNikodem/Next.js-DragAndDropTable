@@ -43,9 +43,7 @@
       "indexes": {
         "unique_idx": {
           "name": "unique_idx",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },

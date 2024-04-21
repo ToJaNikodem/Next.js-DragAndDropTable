@@ -4,9 +4,9 @@ import {
   text,
   timestamp,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core'
 
-export const ExampleTable = pgTable(
+export const Users = pgTable(
   'users',
   {
     id: serial('id').primaryKey(),
@@ -18,6 +18,6 @@ export const ExampleTable = pgTable(
   (users) => {
     return {
       uniqueIdx: uniqueIndex('unique_idx').on(users.email),
-    };
-  },
-);
+    }
+  }
+)

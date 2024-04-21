@@ -1,6 +1,8 @@
 function DashboardPage() {
   return (
-    <div>DashboardPage</div>
+    <>
+      <main></main>
+    </>
   )
 }
 
