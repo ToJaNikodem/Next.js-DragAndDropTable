@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 export default {
-  schema: './models/*',
+  schema: './models/models.ts',
   out: './database',
   driver: 'pg',
   dbCredentials: {
