@@ -3,7 +3,7 @@ import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { sql } from '@vercel/postgres'
 import { drizzle } from 'drizzle-orm/vercel-postgres'
-import { Users } from '@/models/models'
+import { users } from '@/models/models'
 
 const db = drizzle(sql)
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   const svix_signature = headerPayload.get('svix-signature')
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response('Error occured -- no svix headers', {
+    return new Response('Error occurred -- no svix headers', {
       status: 400,
     })
   }
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   const body = JSON.stringify(payload)
 
   const wh = new Webhook(WEBHOOK_SECRET)
+
   let evt: WebhookEvent
 
   try {
@@ -46,15 +47,16 @@ export async function POST(req: Request) {
     })
   }
 
-  const eventType: any = evt.type
-  if (eventType === 'user.created' || eventType === 'user.updated') {
-    const { id, ...attributes } = evt.data
+  const { id: userId } = evt.data
+  const eventType = evt.type
 
-    console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
-    console.log('Webhook body:', body)
+  if (eventType === 'user.created') {
+    console.log(`Webhook with user ID of ${userId}`)
 
-    // await db.insert(Users).values({ clerkId: })
-
-    return new Response('', { status: 200 })
+    await db.insert(users).values({
+      clerkId: userId,
+    })
   }
+
+  return new Response('', { status: 200 })
 }
