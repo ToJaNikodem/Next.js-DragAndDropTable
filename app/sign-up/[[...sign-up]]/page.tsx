@@ -11,4 +11,4 @@ function SignUpPage() {
   )
 }
 
-export default SignUp
+export default SignUpPage

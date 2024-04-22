@@ -11,4 +11,4 @@ function SignInPage() {
   )
 }
 
-export default SignIn
+export default SignInPage
