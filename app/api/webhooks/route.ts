@@ -1,6 +1,11 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
+import { sql } from '@vercel/postgres'
+import { drizzle } from 'drizzle-orm/vercel-postgres'
+import { Users } from '@/models/models'
+
+const db = drizzle(sql)
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
@@ -26,7 +31,6 @@ export async function POST(req: Request) {
   const body = JSON.stringify(payload)
 
   const wh = new Webhook(WEBHOOK_SECRET)
-
   let evt: WebhookEvent
 
   try {
@@ -42,11 +46,15 @@ export async function POST(req: Request) {
     })
   }
 
-  const { id } = evt.data
-  const eventType = evt.type
+  const eventType: any = evt.type
+  if (eventType === 'user.created' || eventType === 'user.updated') {
+    const { id, ...attributes } = evt.data
 
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
-  console.log('Webhook body:', body)
+    console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
+    console.log('Webhook body:', body)
 
-  return new Response('', { status: 200 })
+    // await db.insert(Users).values({ clerkId: })
+
+    return new Response('', { status: 200 })
+  }
 }

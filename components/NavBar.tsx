@@ -14,10 +14,10 @@ function NavBar() {
           </Link>
         </SignedIn>
       </div>
-      <div className="max-w-fit p-4">
+      <div className="max-w-fit p-4 flex flex-row gap-4">
         <SignedOut>
-          <Link href="/sign-in">SignIn</Link>
-          <Link href="/sign-up">SignUp</Link>
+          <Link href="/sign-in" className='px-3 block h-8 w-max-fit bg-yellow-300 text-black rounded-md border-2 border-yellow-300'>SignIn</Link>
+          <Link href="/sign-up" className='px-3 block h-8 w-max-fit bg-white text-black rounded-md border-2 border-yellow-300'>SignUp</Link>
         </SignedOut>
         <SignedIn>
           <UserButton />

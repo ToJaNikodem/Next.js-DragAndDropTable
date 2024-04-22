@@ -8,6 +8,13 @@
       "when": 1713706279817,
       "tag": "0000_complex_abomination",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1713777422181,
+      "tag": "0001_rare_madame_masque",
+      "breakpoints": true
     }
   ]
 }
