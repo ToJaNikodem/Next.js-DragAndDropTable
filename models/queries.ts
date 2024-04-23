@@ -1,8 +1,8 @@
 import { sql } from '@vercel/postgres'
 import { drizzle } from 'drizzle-orm/vercel-postgres'
-import * as models from './models'
+import * as schema from './models'
 
-const db = drizzle(sql, { schema: models })
+export const db = drizzle(sql, { schema })
 
 export const getUserId = async (clerkId: string) => {
   const response = await db.query.users.findFirst({
@@ -10,7 +10,7 @@ export const getUserId = async (clerkId: string) => {
       id: true,
     }
   })
-  return response
+  return response?.id
 }
 
 export const getUserTable = async (userId: number) => {
