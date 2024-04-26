@@ -14,8 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body>
+      <html lang="en" className='h-full'>
+        <body className='h-full'>
           <ClerkLoading>
             <div>Loading...</div>
           </ClerkLoading>

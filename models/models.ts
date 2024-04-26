@@ -22,23 +22,23 @@ export const tables = pgTable('tables', {
   tableName: varchar('table_name', { length: 256 }),
 })
 
-export const collumns = pgTable('collumns', {
+export const columns = pgTable('columns', {
   id: serial('id').primaryKey(),
   tableId: integer('table_id')
     .references(() => tables.id)
     .notNull(),
-  collumnName: varchar('collumn_name', { length: 256 }),
-  index: smallint('index').notNull().unique(),
+  columnName: varchar('column_name', { length: 256 }),
+  index: smallint('index').notNull(),
 })
 
 export const fields = pgTable('fields', {
   id: serial('id').primaryKey(),
-  collumnId: integer('collumn_id')
-    .references(() => collumns.id)
+  columnId: integer('column_id')
+    .references(() => columns.id)
     .notNull(),
   fieldName: varchar('field_name', { length: 256 }),
   fieldDesc: varchar('field_desc', { length: 256 }),
-  index: smallint('index').notNull().unique(),
+  index: smallint('index').notNull(),
 })
 
 export const properties = pgTable('properties', {
@@ -50,35 +50,37 @@ export const properties = pgTable('properties', {
   isActive: boolean('is_active').notNull().default(false),
 })
 
-export const usersRelations = relations(users, ({ many }) => {
-  return {
-    tables: many(tables),
-  }
-})
+export const usersRelations = relations(users, ({ many }) => ({
+  tables: many(tables),
+}))
 
-export const tablesRelations = relations(tables, ({ one, many }) => {
-  return {
-    user: one(users),
-    collumns: many(collumns),
-  }
-})
+export const tablesRelations = relations(tables, ({ one, many }) => ({
+  user: one(users, {
+    fields: [tables.userId],
+    references: [users.id],
+  }),
+  columns: many(columns),
+}))
 
-export const collumnsRelations = relations(collumns, ({ one, many }) => {
-  return {
-    table: one(tables),
-    fields: many(fields),
-  }
-})
+export const columnsRelations = relations(columns, ({ one, many }) => ({
+  table: one(tables, {
+    fields: [columns.tableId],
+    references: [tables.id],
+  }),
+  fields: many(fields),
+}))
 
-export const fieldsRelations = relations(fields, ({ one, many }) => {
-  return {
-    collumn: one(collumns),
-    properties: many(properties),
-  }
-})
+export const fieldsRelations = relations(fields, ({ one, many }) => ({
+  column: one(columns, {
+    fields: [fields.columnId],
+    references: [columns.id],
+  }),
+  properties: many(properties),
+}))
 
-export const propertiesRelations = relations(properties, ({ one }) => {
-  return {
-    field: one(fields),
-  }
-})
+export const propertiesRelations = relations(properties, ({ one }) => ({
+  field: one(fields, {
+    fields: [properties.fieldId],
+    references: [fields.id],
+  }),
+}))
