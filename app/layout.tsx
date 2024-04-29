@@ -21,7 +21,7 @@ export default function RootLayout({
           </ClerkLoading>
           <ClerkLoaded>
             <NavBar />
-            {children}
+            <main>{children}</main>
           </ClerkLoaded>
         </body>
       </html>
