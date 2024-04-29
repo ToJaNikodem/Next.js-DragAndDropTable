@@ -1,6 +1,6 @@
 import { SignUp } from '@clerk/nextjs'
 
-function SignUpPage() {
+export default function SignUpPage() {
   return (
     <>
       <SignUp
@@ -10,5 +10,3 @@ function SignUpPage() {
     </>
   )
 }
-
-export default SignUpPage

@@ -1,6 +1,6 @@
 import { SignIn } from '@clerk/nextjs'
 
-function SignInPage() {
+export default function SignInPage() {
   return (
     <>
       <SignIn
@@ -10,5 +10,3 @@ function SignInPage() {
     </>
   )
 }
-
-export default SignInPage
