@@ -14,6 +14,7 @@ export default function TableField(props: { field: any; columnIndex: number }) {
   }
   return (
     <div
+      ref={setNodeRef}
       className="h-32 border-2 rounded-md border-stone-400 p-2"
     >
       <p>{props.field.fieldName}</p>
