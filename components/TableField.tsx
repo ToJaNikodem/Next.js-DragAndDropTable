@@ -3,10 +3,9 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-export default function TableField(props: { field: any; columnIndex: number }) {
-  const dragId = props.columnIndex + '-' + props.field.index
+export default function TableField(props: { field: any }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: dragId })
+    useSortable({ id: props.field.index })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -16,6 +15,7 @@ export default function TableField(props: { field: any; columnIndex: number }) {
     <div
       ref={setNodeRef}
       className="h-32 border-2 rounded-md border-stone-400 p-2"
+      style={style} {...attributes} {...listeners}
     >
       <p>{props.field.fieldName}</p>
       <p className="text-sm">{props.field.fieldDesc}</p>
