@@ -3,7 +3,8 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-export default function TableField(props: { field: any }) {
+export default function TableField(props: { field: any, columnIndex: number }) {
+  const itemId = props.columnIndex + '-' + props.field.index
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: props.field.index })
 

@@ -1,7 +1,7 @@
 'use client'
 
 import LoadingPage from '@/app/dashboard/loading'
-import { DndContext, DragEndEvent, closestCenter, closestCorners } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
 import { Suspense } from 'react'
 import TableColumn from './TableColumn'
 
