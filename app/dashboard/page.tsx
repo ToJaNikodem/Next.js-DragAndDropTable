@@ -2,18 +2,21 @@ import { getUserId, getUserTable } from '@/models/queries'
 import { auth } from '@clerk/nextjs/server'
 import Table from '@/components/Table'
 
-export default async function DashboardPage() {
+async function DashboardPage(): Promise<JSX.Element> {
   const { userId: clerkId } = auth()
-  const userId = await getUserId(clerkId!)
-  const userTable = await getUserTable(userId!)
 
-  const handleDragEnd = (event: { active: any; over: any }) => {
-    const { active, over } = event
-  }
+  if (!clerkId) return <div>Error</div>
+  const userId = await getUserId(clerkId)
 
+  if (!userId) return <div>Error</div>
+  const userTable = await getUserTable(userId)
+
+  if (!userTable) return <div>Error</div>
   return (
     <>
-      <Table userTable={userTable}/>
+      <Table userTable={userTable} />
     </>
   )
 }
+
+export default DashboardPage

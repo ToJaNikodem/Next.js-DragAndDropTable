@@ -1,12 +1,19 @@
-"use client"
+'use client'
 
+import { Field } from '@/models/queries'
+import { UniqueIdentifier } from '@dnd-kit/core'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-export default function TableField(props: { field: any, columnIndex: number }) {
-  const itemId = props.columnIndex + '-' + props.field.index
+function TableField({
+  field,
+  fieldId,
+}: {
+  field: Field
+  fieldId: UniqueIdentifier
+}): JSX.Element {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.field.index })
+    useSortable({ id: fieldId })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -15,16 +22,18 @@ export default function TableField(props: { field: any, columnIndex: number }) {
   return (
     <div
       ref={setNodeRef}
-      className="h-32 border-2 rounded-md border-stone-400 p-2"
-      style={style} {...attributes} {...listeners}
+      className="h-32 rounded-md border-2 border-stone-400 p-2"
+      style={style}
+      {...attributes}
+      {...listeners}
     >
-      <p>{props.field.fieldName}</p>
-      <p className="text-sm">{props.field.fieldDesc}</p>
-      {props.field.properties.map((property: any) => (
+      <p>{field.fieldName}</p>
+      <p className="text-sm">{field.fieldDesc}</p>
+      {field.properties.map((property) => (
         <div key={property.propertyName}>
           <p
             className={
-              'text-sm rounded-md px-2 py-1 text-white ' +
+              'rounded-md px-2 py-1 text-sm text-white ' +
               (property.isActive ? 'bg-green-500' : 'bg-red-500')
             }
           >
@@ -35,3 +44,5 @@ export default function TableField(props: { field: any, columnIndex: number }) {
     </div>
   )
 }
+
+export default TableField

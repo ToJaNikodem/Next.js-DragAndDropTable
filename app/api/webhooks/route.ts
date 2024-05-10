@@ -7,7 +7,7 @@ import { users } from '@/models/models'
 
 const db = drizzle(sql)
 
-export async function POST(req: Request) {
+export async function POST(request: Request): Promise<Response> {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
 
   if (!WEBHOOK_SECRET) {
@@ -27,15 +27,16 @@ export async function POST(req: Request) {
     })
   }
 
-  const payload = await req.json()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const payload = await request.json()
   const body = JSON.stringify(payload)
 
-  const wh = new Webhook(WEBHOOK_SECRET)
+  const webhook = new Webhook(WEBHOOK_SECRET)
 
-  let evt: WebhookEvent
+  let event: WebhookEvent
 
   try {
-    evt = wh.verify(body, {
+    event = webhook.verify(body, {
       'svix-id': svix_id,
       'svix-timestamp': svix_timestamp,
       'svix-signature': svix_signature,
@@ -47,12 +48,10 @@ export async function POST(req: Request) {
     })
   }
 
-  const { id: userId } = evt.data
-  const eventType = evt.type
+  const { id: userId } = event.data
+  const eventType = event.type
 
   if (eventType === 'user.created') {
-    console.log(`Webhook with user ID of ${userId}`)
-
     await db.insert(users).values({
       clerkId: userId,
     })
