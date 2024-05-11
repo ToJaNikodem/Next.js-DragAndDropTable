@@ -1,7 +1,10 @@
+'use client'
+
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
 import { Items, ItemsColumn, ItemsField } from './Table'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TableField from './TableField'
+import { useDroppable } from '@dnd-kit/core'
 
 function TableColumn({
   column,
@@ -12,29 +15,37 @@ function TableColumn({
 }): JSX.Element {
   const columnId = column.id
 
-  const getColumnItems = (): ItemsField[] | null => {
+  const getColumnItems = useCallback((): ItemsField[] | null => {
     const column = items.columns.find((column) => column.id === columnId)
-    const columnItems = column?.fields.map((field) => {
+    if (!column) return null
+
+    const columnItems = column.fields.map((field) => {
       return field
     })
-    if (columnItems) return columnItems
-    return null
-  }
+
+    return columnItems
+  }, [columnId, items.columns])
 
   const [columnItems, setColumnItems] = useState(getColumnItems)
 
-  console.log('column id: ', columnId, ' items: ', columnItems)
+  const { setNodeRef } = useDroppable({ id: columnId })
+
+  useEffect(() => {
+    setColumnItems(getColumnItems)
+  }, [getColumnItems])
 
   if (columnItems !== null) {
     return (
-      <SortableContext items={columnItems} strategy={rectSortingStrategy}>
-        <div className="flex w-48 flex-col gap-2 rounded-md border-2 border-stone-600 p-2">
-          <p className="text-lg">{column.columnName}</p>
-          {column.fields.map((field) => (
-            <TableField key={field.index} field={field} fieldId={field.id} />
-          ))}
+      <div className="flex w-48 flex-col rounded-md border-2 border-stone-600 p-2">
+        <p className="text-lg">{column.columnName}</p>
+        <div ref={setNodeRef}>
+          <SortableContext items={columnItems} strategy={rectSortingStrategy}>
+            {column.fields.map((field) => (
+              <TableField key={field.id} field={field} fieldId={field.id} />
+            ))}
+          </SortableContext>
         </div>
-      </SortableContext>
+      </div>
     )
   } else {
     return <div>Error</div>
