@@ -15,6 +15,7 @@ import { Column, Field, UserTable } from '@/models/queries'
 import TableColumn from './TableColumn'
 import TableField from './TableField'
 import { arrayMove } from '@dnd-kit/sortable'
+import { Button } from './ui/button'
 
 export interface Items {
   columns: ItemsColumn[]
@@ -31,6 +32,8 @@ export interface ItemsField extends Field {
 
 function Table({ userTable }: { userTable: UserTable }): JSX.Element {
   const [tableData] = useState<UserTable>(userTable)
+
+  const [editMode, setEditMode] = useState<boolean>(false)
 
   const [activeDragId, setActiveDragId] = useState<UniqueIdentifier | null>(
     null
@@ -52,6 +55,7 @@ function Table({ userTable }: { userTable: UserTable }): JSX.Element {
   }
 
   const [items, setItems] = useState<Items>(getItems)
+  const [oldItems, setOldItems] = useState<Items | null>(null)
 
   const getColumnId = (fieldId: string): string => {
     let columnId = ''
@@ -189,7 +193,6 @@ function Table({ userTable }: { userTable: UserTable }): JSX.Element {
           const overIndex = column.fields.findIndex(
             (field) => field.id === over.id
           )
-          console.log('old: ', column.fields)
           const newFields = arrayMove(column.fields, activeIndex, overIndex)
 
           if (!newFields[0]) return column
@@ -206,34 +209,72 @@ function Table({ userTable }: { userTable: UserTable }): JSX.Element {
 
   return (
     <Suspense fallback={<LoadingPage />}>
-      <DndContext
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="m-auto mt-8 h-4/5 max-w-fit rounded-md  border-2 border-black">
-          <div className="pl-4 pt-2 font-bold">
-            <h2 className="text-xl">{tableData.tableName}</h2>
-          </div>
-          <div className="flex flex-row gap-2 p-2">
-            {items.columns.map((column) => (
-              <TableColumn key={column.id} column={column} items={items} />
-            ))}
-          </div>
+      <div className="flex flex-col items-center">
+        <div
+          className={
+            'mt-3 flex w-48 flex-row rounded-md border-2 border-black p-1 ' +
+            (editMode ? 'justify-between' : 'justify-center')
+          }
+        >
+          {editMode ? (
+            <>
+              <Button>Save</Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setEditMode(false)
+                  if (oldItems !== null) setItems(oldItems)
+                }}
+              >
+                Discard
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={() => {
+                setOldItems(items)
+                setEditMode(true)
+              }}
+            >
+              Edit mode
+            </Button>
+          )}
         </div>
-        {activeDragId ? (
-          <DragOverlay>
-            <TableField
-              field={getFieldById(
-                activeDragId.toString(),
-                getColumnId(activeDragId.toString())
-              )}
-              fieldId={activeDragId}
-            />
-          </DragOverlay>
-        ) : null}
-      </DndContext>
+        <DndContext
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="m-auto mt-3 h-4/5 max-w-fit rounded-md  border-2 border-black">
+            <div className="pl-4 pt-2 font-bold">
+              <h2 className="text-xl">{tableData.tableName}</h2>
+            </div>
+            <div className="flex flex-row gap-2 p-2">
+              {items.columns.map((column) => (
+                <TableColumn
+                  key={column.id}
+                  column={column}
+                  items={items}
+                  editMode={editMode}
+                />
+              ))}
+            </div>
+          </div>
+          {activeDragId ? (
+            <DragOverlay>
+              <TableField
+                field={getFieldById(
+                  activeDragId.toString(),
+                  getColumnId(activeDragId.toString())
+                )}
+                fieldId={activeDragId}
+                editMode={editMode}
+              />
+            </DragOverlay>
+          ) : null}
+        </DndContext>
+      </div>
     </Suspense>
   )
 }

@@ -9,9 +9,11 @@ import { useDroppable } from '@dnd-kit/core'
 function TableColumn({
   column,
   items,
+  editMode = false
 }: {
   column: ItemsColumn
   items: Items
+  editMode: boolean
 }): JSX.Element {
   const columnId = column.id
 
@@ -41,7 +43,7 @@ function TableColumn({
         <div ref={setNodeRef}>
           <SortableContext items={columnItems} strategy={rectSortingStrategy}>
             {column.fields.map((field) => (
-              <TableField key={field.id} field={field} fieldId={field.id} />
+              <TableField key={field.id} field={field} fieldId={field.id} editMode={editMode}/>
             ))}
           </SortableContext>
         </div>
